@@ -1,9 +1,9 @@
 import {FC} from 'react'
-import Props from './Props'
+import {MsgProps} from './ChatArea'
 
-const UserMsg: FC<Props> = (props: Props) => {
+const UserMsg: FC<MsgProps> = (props: MsgProps) => {
   return (
-    <div>
+    <div className="msg userMsg">
       <p>{props.msg}</p>
     </div>
   )
