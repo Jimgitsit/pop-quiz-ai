@@ -1,4 +1,5 @@
 import './App.css'
+import './lds-ellipsis.css'
 import ChatArea from "./components/ChatArea.tsx";
 import UserInput from "./components/UserInput.tsx";
 import {useState} from "react";
@@ -22,9 +23,10 @@ function App() {
   return (
     <>
       <div id="greeting">
-        <p>What subject would you like to learn about?</p>
+        <p>What subject would you like to learn more about?</p>
       </div>
       <ChatArea msgHistory={msgHistory} />
+      <div id="ldsEllipsis" className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
       <UserInput msgHistory={msgHistory} setMsgHistory={setMsgHistory} />
     </>
   )

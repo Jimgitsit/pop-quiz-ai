@@ -9,22 +9,24 @@ body {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-  font-size: 20px;
+  font-size: 1.1em;
 }
 
 #inputWrap {
   position: relative;
+  padding: 10px;
+  background-color: #2e2e2e;
 }
 
 #inputWrap input {
   border: none;
-  background-color: #242424;
+  background-color: #2e2e2e;
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.3;
   font-weight: 400;
-  font-size: 20px;
+  font-size: 1.1rem;
   width: 100%;
-  color: #7d7d7d;
+  color: #d7d7d7;
   margin-left: -2px;
   margin-top: -1px;
 }
@@ -40,15 +42,20 @@ body {
 }
 
 .msg {
-
+  padding: 12px;
 }
 
 .userMsg {
-  color: #7d7d7d;
+  color: #d7d7d7;
+  background-color: #2e2e2e;
 }
 
-.msg p {
-  margin: 0;
+.userMsg:before {
+  content: "> "
+}
+
+#greeting {
+  padding: 10px;
 }
 
 #greeting p {
@@ -57,4 +64,8 @@ body {
 
 .new-line {
   white-space: pre-line;
+}
+
+#ldsEllipsis {
+  display: none;
 }

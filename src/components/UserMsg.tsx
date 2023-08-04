@@ -4,7 +4,7 @@ import {MsgProps} from './ChatArea'
 const UserMsg: FC<MsgProps> = (props: MsgProps) => {
   return (
     <div className="msg userMsg">
-      <p>{props.msg}</p>
+      {props.msg}
     </div>
   )
 }

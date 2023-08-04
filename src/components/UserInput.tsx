@@ -65,18 +65,30 @@ const UserInput: FC<Props> = (props: Props) => {
   }
   
   const submitInput = () => {
-    const newMsg = (document.getElementsByName('userInput')[0] as HTMLInputElement).value
+    const input = document.getElementsByName('userInput')[0] as HTMLInputElement
+    const newMsg = input.value
     let msgHistory = [...props.msgHistory, {type: 'user', msg: newMsg}]
     props.setMsgHistory(msgHistory)
     userInput.current !== null ? userInput.current.value = '' : null
     
+    const inputWrap = document.getElementById('inputWrap') as HTMLElement
+    inputWrap !== null ? inputWrap.style.display = 'none' : null
+    
+    const ellipsis = document.getElementById('ldsEllipsis') as HTMLElement
+    ellipsis !== null ? ellipsis.style.display = 'block' : null
+    window.scrollTo(0, window.innerHeight + 100)
+    
     // TODO: Get completion from openai and add to msgHistory
     getCompletion(newMsg).then((completion) => {
+      ellipsis !== null ? ellipsis.style.display = 'none' : null
+      
       msgHistory = [...msgHistory, {type: 'agent', msg: completion}]
       props.setMsgHistory(msgHistory)
       
       // Scroll to bottom of window
       setTimeout(() => {
+        inputWrap !== null ? inputWrap.style.display = 'block' : null
+        input !== null ? input.focus() : null
         window.scrollTo(0, window.innerHeight + 100)
       }, 200)
     })
