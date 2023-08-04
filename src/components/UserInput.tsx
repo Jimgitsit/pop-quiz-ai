@@ -76,7 +76,9 @@ const UserInput: FC<Props> = (props: Props) => {
     
     const ellipsis = document.getElementById('ldsEllipsis') as HTMLElement
     ellipsis !== null ? ellipsis.style.display = 'block' : null
-    window.scrollTo(0, window.innerHeight + 100)
+    setTimeout(() => {
+      window.scrollTo(0, window.innerHeight + 100)
+    }, 200)
     
     // TODO: Get completion from openai and add to msgHistory
     getCompletion(newMsg).then((completion) => {
