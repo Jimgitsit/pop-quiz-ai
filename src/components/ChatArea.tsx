@@ -1,4 +1,4 @@
-import {FC, useEffect} from 'react'
+import {FC} from 'react'
 import AgentMsg from './AgentMsg'
 import UserMsg from './UserMsg'
 import {Msg} from '../App'
@@ -12,22 +12,16 @@ export interface MsgProps {
 }
 
 const ChatArea: FC<ChatProps> = (props: ChatProps) => {
-  
-  const onUserInput = () => {
-    console.log('msgHistory: ', props.msgHistory)
-  }
-  useEffect(onUserInput, [props.msgHistory])
-  
   return (
     <div id="chat">
       {
-        // Display message history
-        props.msgHistory.map((msg: Msg) => {
+        // Display the message history
+        props.msgHistory.map((msg: Msg, index: number) => {
           if (msg.type === 'agent') {
-            return <AgentMsg msg={msg.msg} />
+            return <AgentMsg key={index} msg={msg.msg} />
           }
           else if (msg.type === 'user') {
-            return <UserMsg msg={msg.msg} />
+            return <UserMsg key={index} msg={msg.msg} />
           }
         })
       }

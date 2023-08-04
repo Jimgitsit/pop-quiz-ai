@@ -1,5 +1,6 @@
 #root {
   max-width: 1280px;
+  height: 100%;
   margin: 0 auto;
   padding: 2rem;
 }
@@ -11,17 +12,31 @@ body {
   font-size: 20px;
 }
 
+#inputWrap {
+  position: relative;
+}
+
 #inputWrap input {
   border: none;
   background-color: #242424;
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
+  line-height: 1.3;
   font-weight: 400;
   font-size: 20px;
+  width: 100%;
+  color: #7d7d7d;
+  margin-left: -2px;
+  margin-top: -1px;
 }
 
 #inputWrap input:focus {
   outline-width: 0;
+}
+
+#suggestion {
+  position: absolute;
+  top: 0;
+  color: #7d7d7d
 }
 
 .msg {
@@ -38,4 +53,8 @@ body {
 
 #greeting p {
   margin: 0;
+}
+
+.new-line {
+  white-space: pre-line;
 }

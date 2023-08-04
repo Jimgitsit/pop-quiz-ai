@@ -13,10 +13,16 @@ function App() {
   
   // TODO: Init and pre-train openai
   
+  // Always keep focus on the input
+  window.addEventListener('click', () => {
+    const input = document.getElementsByName('userInput')[0] as HTMLInputElement
+    input !== null ? input.focus() : null
+  })
+  
   return (
     <>
       <div id="greeting">
-        <p>What would you like to learn about?</p>
+        <p>What subject would you like to learn about?</p>
       </div>
       <ChatArea msgHistory={msgHistory} />
       <UserInput msgHistory={msgHistory} setMsgHistory={setMsgHistory} />

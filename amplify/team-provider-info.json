@@ -1,0 +1,15 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-popquizai-dev-145116-authRole",
+      "UnauthRoleArn": "arn:aws:iam::535836328331:role/amplify-popquizai-dev-145116-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::535836328331:role/amplify-popquizai-dev-145116-authRole",
+      "Region": "us-west-1",
+      "DeploymentBucketName": "amplify-popquizai-dev-145116-deployment",
+      "UnauthRoleName": "amplify-popquizai-dev-145116-unauthRole",
+      "StackName": "amplify-popquizai-dev-145116",
+      "StackId": "arn:aws:cloudformation:us-west-1:535836328331:stack/amplify-popquizai-dev-145116/a92fa150-3308-11ee-bbb4-06af79e0913f",
+      "AmplifyAppId": "d33isa3m6m330e"
+    }
+  }
+}
