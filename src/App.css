@@ -32,6 +32,12 @@ body {
 }
 
 #inputWrap input:focus {
+  border-color: inherit;
+  box-shadow: none;
+  outline: none;
+}
+
+#inputWrap input.middle:focus {
   outline-width: 0;
 }
 

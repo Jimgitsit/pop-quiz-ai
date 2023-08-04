@@ -25,7 +25,7 @@ const suggestions = [
   "Human Anatomy Essentials",
   "Introduction to Psychology",
   "Environmental Science 101",
-  "Beginning French Language",
+  "French Language",
   "Statistical Methods",
   "Early American History",
   "Foundations of Music Theory",
@@ -96,7 +96,7 @@ const UserInput: FC<Props> = (props: Props) => {
   
   return (
     <div id="inputWrap">
-      <input id="userInput" name="userInput" ref={userInput} onKeyDown={handleInputKeyDown} autoFocus placeholder={suggestion} />
+      <input id="userInput" name="userInput" ref={userInput} onKeyDown={handleInputKeyDown} autoFocus placeholder={suggestion} data-lpignore="true" />
     </div>
   )
 }
