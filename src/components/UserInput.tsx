@@ -58,7 +58,8 @@ const UserInput: FC<Props> = (props: Props) => {
   }
   
   const onInput = (event: React.FormEvent<HTMLTextAreaElement>) => {
-    event.target.parentNode.dataset.replicatedValue = event.target.value
+    const el = event.target as HTMLTextAreaElement
+    el.dataset.replicatedValue = el.value
   }
   
   const acceptSuggestion = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
