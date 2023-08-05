@@ -37,14 +37,14 @@ const suggestions = [
 ]
 
 const UserInput: FC<Props> = (props: Props) => {
-  const userInput = useRef<HTMLInputElement>(null)
+  const userInput = useRef<HTMLTextAreaElement>(null)
   
   let suggestion = ''
   if (props.msgHistory.length === 0) {
     suggestion = suggestions[Math.floor(Math.random() * suggestions.length)] + ' (tab to accept)'
   }
   
-  const handleInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleInputKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter') {
       submitInput()
     }
@@ -53,11 +53,15 @@ const UserInput: FC<Props> = (props: Props) => {
     }
     
     // Clear the placeholder on any keydown event
-    const input = document.getElementById('userInput') as HTMLInputElement
+    const input = document.getElementById('userInput') as HTMLTextAreaElement
     input !== null ? input.setAttribute('placeholder', '') : null
   }
   
-  const acceptSuggestion = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  const onInput = (event: React.FormEvent<HTMLTextAreaElement>) => {
+    event.target.parentNode.dataset.replicatedValue = event.target.value
+  }
+  
+  const acceptSuggestion = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     event.preventDefault()
     
     suggestion = suggestion.replace(' (tab to accept)', '')
@@ -73,7 +77,7 @@ const UserInput: FC<Props> = (props: Props) => {
   
   const submitInput = () => {
     // Update the message history with the user's input
-    const input = document.getElementsByName('userInput')[0] as HTMLInputElement
+    const input = document.getElementsByName('userInput')[0] as HTMLTextAreaElement
     const newPrompt = input.value
     let msgHistory = [...props.msgHistory, {type: 'user', msg: newPrompt}]
     props.setMsgHistory(msgHistory)
@@ -100,17 +104,21 @@ const UserInput: FC<Props> = (props: Props) => {
       ellipsis !== null ? ellipsis.style.display = 'none' : null
       
       // Show the input
-      inputWrap !== null ? inputWrap.style.display = 'block' : null
+      inputWrap !== null ? inputWrap.style.display = 'grid' : null
       input !== null ? input.focus() : null
       
-      // Scroll to bottom
-      scrollToBottom(inputWrap)
+      // Scroll to bottom (need the timeout for the element to be rendered... best way to do this?)
+      setTimeout(() => {
+        const agentMsgs = document.getElementsByClassName('agentMsg')
+        const lastAgentMsg = agentMsgs[agentMsgs.length - 1] as HTMLElement
+        scrollToBottom(lastAgentMsg)
+      }, 100)
     })
   }
   
   return (
     <div id="inputWrap">
-      <input id="userInput" name="userInput" ref={userInput} onKeyDown={handleInputKeyDown} autoFocus placeholder={suggestion} data-lpignore="true" />
+      <textarea id="userInput" name="userInput" rows={1} onInput={onInput} ref={userInput} onKeyDown={handleInputKeyDown} autoFocus placeholder={suggestion} data-lpignore="true" />
     </div>
   )
 }

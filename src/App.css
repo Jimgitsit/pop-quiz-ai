@@ -1,5 +1,5 @@
 #root {
-  max-width: 1280px;
+  max-width: 1120px;
   height: 100%;
   margin: 0 auto;
   padding: 2rem;
@@ -17,32 +17,32 @@ body {
 }
 
 #inputWrap {
-  position: relative;
   padding: 10px;
   background-color: #2e2e2e;
+  display: grid;
 }
 
-#inputWrap input {
-  border: none;
+#inputWrap::after {
+  content: attr(data-replicated-value) " ";
+  white-space: pre-wrap;
+  visibility: hidden;
+}
+
+#inputWrap > textarea {
+  resize: none;
+  overflow: hidden;
   background-color: #2e2e2e;
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.3;
-  font-weight: 400;
-  font-size: 1.1rem;
-  width: 100%;
-  color: #d7d7d7;
-  margin-left: -2px;
-  margin-top: -1px;
-}
-
-#inputWrap input:focus {
-  border-color: inherit;
-  box-shadow: none;
   outline: none;
 }
 
-#inputWrap input.middle:focus {
-  outline-width: 0;
+#inputWrap > textarea,
+#inputWrap::after {
+  /* Identical styling required!! */
+  border: none;
+  font: inherit;
+
+  /* Place on top of each other */
+  grid-area: 1 / 1 / 2 / 2;
 }
 
 #suggestion {
