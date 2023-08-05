@@ -64,6 +64,13 @@ const UserInput: FC<Props> = (props: Props) => {
     userInput.current !== null ? userInput.current.value = suggestion : null
   }
   
+  const scrollToBottom = (bottomElement: HTMLElement) => {
+    setTimeout(() => {
+      // window.scrollTo(0, document.body.scrollHeight)
+      bottomElement !== null ? bottomElement.scrollIntoView() : null
+    }, 100)
+  }
+  
   const submitInput = () => {
     // Update the message history with the user's input
     const input = document.getElementsByName('userInput')[0] as HTMLInputElement
@@ -81,9 +88,7 @@ const UserInput: FC<Props> = (props: Props) => {
     ellipsis !== null ? ellipsis.style.display = 'block' : null
     
     // Scroll to bottom
-    setTimeout(() => {
-      window.scrollTo(0, window.innerHeight + 100)
-    }, 200)
+    scrollToBottom(ellipsis)
     
     // Get completion from openai and add to msgHistory
     props.openAIEx.getCompletion(newPrompt).then((completion) => {
@@ -99,10 +104,7 @@ const UserInput: FC<Props> = (props: Props) => {
       input !== null ? input.focus() : null
       
       // Scroll to bottom
-      setTimeout(() => {
-        // Scroll to bottom
-        window.scrollTo(0, window.innerHeight + 100)
-      }, 200)
+      scrollToBottom(inputWrap)
     })
   }
   
