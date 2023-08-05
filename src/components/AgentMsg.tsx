@@ -1,10 +1,12 @@
 import {FC} from 'react'
 import {MsgProps} from './ChatArea'
+import ReactMarkdown from "react-markdown";
+import remarkGfm from 'remark-gfm'
 
 const AgentMsg: FC<MsgProps> = (props: MsgProps) => {
   return (
     <div className="msg agentMsg">
-      <span className='new-line'>{props.msg}</span>
+      <ReactMarkdown remarkPlugins={[remarkGfm]}>{props.msg}</ReactMarkdown>
     </div>
   )
 }

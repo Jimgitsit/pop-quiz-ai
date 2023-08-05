@@ -1,11 +1,12 @@
 import React, {FC} from 'react'
 import {useRef} from 'react'
 import {Msg} from '../App'
-import {getCompletion} from '../openaiex.tsx'
+import OpenAIEx from '../OpenAIEx'
 
 interface Props {
   msgHistory: Msg[],
-  setMsgHistory: React.Dispatch<React.SetStateAction<Msg[]>>
+  setMsgHistory: React.Dispatch<React.SetStateAction<Msg[]>>,
+  openAIEx: OpenAIEx
 }
 
 const suggestions = [
@@ -36,7 +37,6 @@ const suggestions = [
 ]
 
 const UserInput: FC<Props> = (props: Props) => {
-  
   const userInput = useRef<HTMLInputElement>(null)
   
   let suggestion = ''
@@ -52,7 +52,7 @@ const UserInput: FC<Props> = (props: Props) => {
       acceptSuggestion(event)
     }
     
-    // Clear the placeholder
+    // Clear the placeholder on any keydown event
     const input = document.getElementById('userInput') as HTMLInputElement
     input !== null ? input.setAttribute('placeholder', '') : null
   }
@@ -65,32 +65,42 @@ const UserInput: FC<Props> = (props: Props) => {
   }
   
   const submitInput = () => {
+    // Update the message history with the user's input
     const input = document.getElementsByName('userInput')[0] as HTMLInputElement
-    const newMsg = input.value
-    let msgHistory = [...props.msgHistory, {type: 'user', msg: newMsg}]
+    const newPrompt = input.value
+    let msgHistory = [...props.msgHistory, {type: 'user', msg: newPrompt}]
     props.setMsgHistory(msgHistory)
     userInput.current !== null ? userInput.current.value = '' : null
     
+    // Hide the input
     const inputWrap = document.getElementById('inputWrap') as HTMLElement
     inputWrap !== null ? inputWrap.style.display = 'none' : null
     
+    // Show the ellipsis
     const ellipsis = document.getElementById('ldsEllipsis') as HTMLElement
     ellipsis !== null ? ellipsis.style.display = 'block' : null
+    
+    // Scroll to bottom
     setTimeout(() => {
       window.scrollTo(0, window.innerHeight + 100)
     }, 200)
     
-    // TODO: Get completion from openai and add to msgHistory
-    getCompletion(newMsg).then((completion) => {
-      ellipsis !== null ? ellipsis.style.display = 'none' : null
-      
+    // Get completion from openai and add to msgHistory
+    props.openAIEx.getCompletion(newPrompt).then((completion) => {
+      // Update the message history with the agent's response
       msgHistory = [...msgHistory, {type: 'agent', msg: completion}]
       props.setMsgHistory(msgHistory)
       
-      // Scroll to bottom of window
+      // Hide the ellipsis
+      ellipsis !== null ? ellipsis.style.display = 'none' : null
+      
+      // Show the input
+      inputWrap !== null ? inputWrap.style.display = 'block' : null
+      input !== null ? input.focus() : null
+      
+      // Scroll to bottom
       setTimeout(() => {
-        inputWrap !== null ? inputWrap.style.display = 'block' : null
-        input !== null ? input.focus() : null
+        // Scroll to bottom
         window.scrollTo(0, window.innerHeight + 100)
       }, 200)
     })

@@ -68,10 +68,6 @@ body {
   margin: 0;
 }
 
-.new-line {
-  white-space: pre-line;
-}
-
 #ldsEllipsis {
   display: none;
 }
