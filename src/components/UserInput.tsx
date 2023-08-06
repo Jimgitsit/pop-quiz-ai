@@ -1,4 +1,4 @@
-import React, {FC} from 'react'
+import React, {FC, useState} from 'react'
 import {useRef} from 'react'
 import {Msg} from '../App'
 import OpenAIEx from '../OpenAIEx'
@@ -39,22 +39,21 @@ const suggestions = [
 const UserInput: FC<Props> = (props: Props) => {
   const userInput = useRef<HTMLTextAreaElement>(null)
   
-  let suggestion = ''
-  if (props.msgHistory.length === 0) {
-    suggestion = suggestions[Math.floor(Math.random() * suggestions.length)] + ' (tab to accept)'
+  const newSuggestion = () => {
+    return suggestions[Math.floor(Math.random() * suggestions.length)] + ' (space to accept)'
   }
   
+  const [suggestion, setSuggestion] = useState(newSuggestion())
+  
   const handleInputKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    const input = document.getElementById('userInput') as HTMLTextAreaElement
+    console.log('input.value.length: ', input.value.length)
     if (event.key === 'Enter') {
       submitInput()
     }
-    else if (event.key === 'Tab') {
+    else if (input.value.length === 0 && event.key === ' ') {
       acceptSuggestion(event)
     }
-    
-    // Clear the placeholder on any keydown event
-    const input = document.getElementById('userInput') as HTMLTextAreaElement
-    input !== null ? input.setAttribute('placeholder', '') : null
   }
   
   const onInput = (event: React.FormEvent<HTMLTextAreaElement>) => {
@@ -63,10 +62,11 @@ const UserInput: FC<Props> = (props: Props) => {
   }
   
   const acceptSuggestion = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    console.log('acceptSuggestion')
     event.preventDefault()
     
-    suggestion = suggestion.replace(' (tab to accept)', '')
-    userInput.current !== null ? userInput.current.value = suggestion : null
+    const prompt = suggestion.replace(' (space to accept)', '')
+    userInput.current !== null ? userInput.current.value = prompt : null
   }
   
   const scrollToBottom = (bottomElement: HTMLElement) => {
@@ -78,7 +78,7 @@ const UserInput: FC<Props> = (props: Props) => {
   
   const submitInput = () => {
     // Update the message history with the user's input
-    const input = document.getElementsByName('userInput')[0] as HTMLTextAreaElement
+    const input = document.getElementById('userInput') as HTMLTextAreaElement
     const newPrompt = input.value
     let msgHistory = [...props.msgHistory, {type: 'user', msg: newPrompt}]
     props.setMsgHistory(msgHistory)
@@ -105,6 +105,7 @@ const UserInput: FC<Props> = (props: Props) => {
       ellipsis !== null ? ellipsis.style.display = 'none' : null
       
       // Show the input
+      setSuggestion('')
       inputWrap !== null ? inputWrap.style.display = 'grid' : null
       input !== null ? input.focus() : null
       

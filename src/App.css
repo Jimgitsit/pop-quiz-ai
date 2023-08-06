@@ -51,13 +51,14 @@ body {
   color: #7d7d7d
 }
 
-.msg {
-  padding: 12px;
+.agentMsg {
+  padding: 0 12px;
 }
 
 .userMsg {
   color: #d7d7d7;
   background-color: #2e2e2e;
+  padding: 12px;
 }
 
 .userMsg:before {
