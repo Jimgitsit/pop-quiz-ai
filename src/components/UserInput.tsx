@@ -1,12 +1,11 @@
 import React, {FC, useState} from 'react'
 import {useRef} from 'react'
 import {Msg} from '../App'
-import OpenAIEx from '../OpenAIEx'
+import axios from 'axios'
 
 interface Props {
   msgHistory: Msg[],
-  setMsgHistory: React.Dispatch<React.SetStateAction<Msg[]>>,
-  openAIEx: OpenAIEx
+  setMsgHistory: React.Dispatch<React.SetStateAction<Msg[]>>
 }
 
 const suggestions = [
@@ -51,14 +50,22 @@ const UserInput: FC<Props> = (props: Props) => {
     if (event.key === 'Enter') {
       submitInput()
     }
+    else if (event.key === 'Backspace') {
+      // if the input is empty
+      if (input.value.length === 0) {
+        // get a new suggestion
+        setSuggestion(newSuggestion())
+      }
+    }
     else if (input.value.length === 0 && event.key === ' ') {
       acceptSuggestion(event)
     }
   }
   
   const onInput = (event: React.FormEvent<HTMLTextAreaElement>) => {
-    const el = event.target as HTMLTextAreaElement
-    el.dataset.replicatedValue = el.value
+    // Copy the value to the replicatedValue attribute thereby causing the textarea to expand as needed
+    ((event.target as HTMLTextAreaElement).parentNode as HTMLElement).dataset.replicatedValue =
+      (event.target as HTMLTextAreaElement).value
   }
   
   const acceptSuggestion = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -71,7 +78,6 @@ const UserInput: FC<Props> = (props: Props) => {
   
   const scrollToBottom = (bottomElement: HTMLElement) => {
     setTimeout(() => {
-      // window.scrollTo(0, document.body.scrollHeight)
       bottomElement !== null ? bottomElement.scrollIntoView() : null
     }, 100)
   }
@@ -93,25 +99,38 @@ const UserInput: FC<Props> = (props: Props) => {
     ellipsis !== null ? ellipsis.style.display = 'block' : null
     
     // Scroll to bottom
-    scrollToBottom(ellipsis)
+    if (msgHistory.length > 1) {
+      scrollToBottom(ellipsis)
+    }
     
-    // Get completion from openai and add to msgHistory
-    props.openAIEx.getCompletion(newPrompt).then((completion) => {
-      // Update the message history with the agent's response
-      msgHistory = [...msgHistory, {type: 'agent', msg: completion}]
-      props.setMsgHistory(msgHistory)
+    // Call server for completion
+    axios.post(import.meta.env.VITE_API_HOST + '/getCompletion', {
+        newPrompt: newPrompt,
+        history: props.msgHistory
+    }).then((response) => {
+      if (response.status !== 200) {
+        console.log('Error: ', response.data)
+        msgHistory = [...props.msgHistory, {type: 'agent', msg: 'Error: ' + response.data.error}]
+        props.setMsgHistory(msgHistory)
+      } else {
+        // Update the message history with the agent's response
+        msgHistory = [...msgHistory, {type: 'agent', msg: response.data.completionText}]
+        props.setMsgHistory(msgHistory)
+        console.log('response.data.completion: ', response.data.completion)
+        console.log('history: ', response.data.history)
+      }
       
       // Hide the ellipsis
       ellipsis !== null ? ellipsis.style.display = 'none' : null
-      
+  
       // Show the input
       setSuggestion('')
       inputWrap !== null ? inputWrap.style.display = 'grid' : null
       input !== null ? input.focus() : null
-      
+  
       // Scroll to bottom (need the timeout for the element to be rendered... best way to do this?)
       setTimeout(() => {
-        const agentMsgs = document.getElementsByClassName('agentMsg')
+        const agentMsgs = document.getElementsByClassName('userMsg')
         const lastAgentMsg = agentMsgs[agentMsgs.length - 1] as HTMLElement
         scrollToBottom(lastAgentMsg)
       }, 100)
