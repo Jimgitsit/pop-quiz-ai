@@ -41,6 +41,10 @@ const suggestions = [
 const UserInput: FC<Props> = (props: Props) => {
   const userInput = useRef<HTMLTextAreaElement>(null)
   
+  const [totalPromptTokens, setTotalPromptTokens] = useState(0)
+  const [totalCompletionTokens, setTotalCompletionTokens] = useState(0)
+  const [totalTokens, setTotalTokens] = useState(0)
+  
   const newSuggestion = () => {
     return suggestions[Math.floor(Math.random() * suggestions.length)] + ' (space to accept)'
   }
@@ -49,7 +53,6 @@ const UserInput: FC<Props> = (props: Props) => {
   
   const handleInputKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     const input = document.getElementById('userInput') as HTMLTextAreaElement
-    console.log('input.value.length: ', input.value.length)
     if (event.key === 'Enter') {
       submitInput()
     }
@@ -72,7 +75,6 @@ const UserInput: FC<Props> = (props: Props) => {
   }
   
   const acceptSuggestion = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    console.log('acceptSuggestion')
     event.preventDefault()
     
     const prompt = suggestion.replace(' (space to accept)', '')
@@ -106,8 +108,14 @@ const UserInput: FC<Props> = (props: Props) => {
       scrollToBottom(ellipsis)
     }
     
+    // TODO: Check token limit
+    // if (totalTokens >= import.meta.env.REACT_APP_MAX_TOKENS) {
+    //
+    // }
+    
     // Call server for completion
-    axios.post(import.meta.env.VITE_API_HOST + '/getCompletion', {
+    console.log('Calling API at ' + process.env.REACT_APP_API_HOST)
+    axios.post(process.env.REACT_APP_API_HOST + '/getCompletion', {
         newPrompt: newPrompt,
         history: props.msgHistory
     }).then((response) => {
@@ -119,8 +127,16 @@ const UserInput: FC<Props> = (props: Props) => {
         // Update the message history with the agent's response
         msgHistory = [...msgHistory, {type: 'agent', msg: response.data.completionText}]
         props.setMsgHistory(msgHistory)
-        console.log('response.data.completion: ', response.data.completion)
-        console.log('history: ', response.data.history)
+        
+        setTotalPromptTokens(totalPromptTokens + response.data.completion.data.usage.prompt_tokens)
+        setTotalCompletionTokens(totalCompletionTokens + response.data.completion.data.usage.completion_tokens)
+        setTotalTokens(totalTokens + response.data.completion.data.usage.total_tokens)
+        
+        console.log('model: ', response.data.completion.data.model)
+        console.log('usage: ', response.data.completion.data.usage)
+        console.log('totalPromptTokens: ', totalPromptTokens + response.data.completion.data.usage.prompt_tokens)
+        console.log('totalCompletionTokens: ', totalCompletionTokens + response.data.completion.data.usage.completion_tokens)
+        console.log('totalTokens: ', totalTokens + response.data.completion.data.usage.total_tokens)
       }
       
       // Hide the ellipsis
