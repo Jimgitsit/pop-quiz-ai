@@ -154,6 +154,17 @@ const UserInput: FC<Props> = (props: Props) => {
         scrollToBottom(lastAgentMsg)
       }, 100)
     })
+    .catch((error) => {
+      console.log('Error: ', error)
+      
+      // Hide the ellipsis
+      ellipsis !== null ? ellipsis.style.display = 'none' : null
+      
+      // Show the input
+      setSuggestion('')
+      inputWrap !== null ? inputWrap.style.display = 'grid' : null
+      input !== null ? input.focus() : null
+    })
   }
   
   return (

@@ -2,12 +2,16 @@ FROM node:16.15.0
 
 WORKDIR /usr/app
 
+# install dependencies
 COPY package*.json ./
-
 RUN npm ci -qy
 
-COPY . .
+# build
+COPY ./src ./src
+COPY ./tsconfig.json ./
+RUN npm install -g typescript
+RUN npm run build
 
+# serve
 EXPOSE 3000
-
-CMD npm start
+CMD npm run serve
